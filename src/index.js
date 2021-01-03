@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import SeasonDisplay from './SeasonDisplay';
+import Spinner from './Spinner';
+
 // functional based components
 // const App = ( ) => {
 //     window.navigator.geolocation.getCurrentPosition(
@@ -36,39 +39,36 @@ class App extends React.Component {
         
     }
     */
-   
-    //No need to use constuctor for intializing state; we can do this directly like this;
-    state= {lat: null , errorMessage: ''};
 
-    componentDidMount(){
+    //No need to use constuctor for intializing state; we can do this directly like this;
+    state = { lat: null, errorMessage: '' };
+
+    componentDidMount() {
         window.navigator.geolocation.getCurrentPosition(
-            position => this.setState({ lat: position.coords.latitude }) ,
+            position => this.setState({ lat: position.coords.latitude }),
             (err) => this.setState({ errorMessage: err.message })
         );
     }
-    componentDidUpdate () {
+    componentDidUpdate() {
         console.log('Component updated');
     }
 
-
+renderContent() {
+    if (this.state.lat && !this.state.errorMessage) {
+        return <SeasonDisplay lat={this.state.lat} />
+    }
+    if (!this.state.lat && this.state.errorMessage) {
+        return <div> Error: {this.state.errorMessage} </div>;
+    }
+    return <Spinner message= "Please accept location requests..." />;
+}
     // Requirements for react to define render() !!!
     render() {
-         /*
         return (
-            <div>
-                Latitude: {this.state.lat }
-                <br/>
-                Error: { this.state.errorMessage }
+            <div className = "border red">
+                { this.renderContent() }
             </div>
-           
-        );  */
-           if(this.state.lat && !this.state.errorMessage){
-               return <div> Latitude: {this.state.lat} </div>;
-           }
-           if(!this.state.lat && this.state.errorMessage){
-               return <div> Error: {this.state.errorMessage } </div>;
-           }
-           return <div> Loading... </div>;
+        )
     }
 }
 
